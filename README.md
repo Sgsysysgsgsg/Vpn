@@ -1,31 +1,33 @@
-# PyWarp Mobile
+# PyWarp Android
 
-Android-native mobile project using Kotlin, Jetpack Compose and the official WireGuard Android userspace tunnel library.
+PyWarp is an Android VPN client preview with a real WireGuard userspace backend, plus a clearly separated handoff to Cloudflare's official WARP Android app.
 
-## Implemented
-- Native Android dashboard.
-- Import and parse a standard WireGuard `.conf` file.
-- Store imported configuration in app-private internal storage (app backup is disabled).
-- Start/stop a real userspace WireGuard tunnel through WireGuard's `GoBackend` / `wireguard-go`.
-- Backend state is checked before the UI reports Connected.
-- WireGuard configuration routes, DNS and IPv4/IPv6 behavior are applied by the WireGuard backend from the imported configuration.
+## Current functionality
 
-## Important Cloudflare WARP scope
-This is **not yet a Cloudflare WARP client**. The upstream PyWarp project is a Python/PySide6 controller for Cloudflare's official desktop `warp-cli`; it does not contain an Android embeddable WARP engine. Cloudflare's consumer Android app is an official supported product, but no public Android WARP SDK/API for third-party embedding was identified during this implementation.
+- Import and validate a standard WireGuard .conf file.
+- Start and stop a real WireGuard tunnel using the official WireGuard Android tunnel library (wireguard-go).
+- Open the in-app Settings dialog.
+- If Cloudflare's official 1.1.1.1 + WARP app is installed, launch it; otherwise open its Google Play listing.
+- Keep WireGuard tunnel state distinct from peer handshake and end-to-end connectivity verification.
 
-This release therefore implements the public WireGuard protocol with user-supplied configuration. It does not register Cloudflare accounts, mint WARP credentials, imitate an official Cloudflare client, or claim WARP/MASQUE compatibility. A WARP-specific profile can only be used if it is legitimately obtained and parses as a standard WireGuard configuration. MASQUE remains unsupported until Cloudflare provides a supported integration surface or a separately reviewed interoperable implementation is available.
+## Cloudflare WARP status
+
+This repository does **not** yet implement Cloudflare account registration, device enrollment, MASQUE/Connect-IP, or a Cloudflare WARP tunnel. The Settings screen explains this and offers a handoff to Cloudflare's official Android app, which does not require a user-supplied .conf file.
+
+Cloudflare documents consumer WARP traffic tunneling over MASQUE, and the Linux CLI also documents WireGuard/MASQUE protocol selection. That does not provide a supported Android embedding SDK or authorize this app to claim it has an official Cloudflare integration. We do not fabricate credentials, endpoint keys, or a successful connection state.
+
+A legitimate future MASQUE implementation would need a reviewed, license-compatible core, a real Android TUN-to-MASQUE bridge, account/device enrollment handling, DNS and IPv4/IPv6 routing, lifecycle/reconnect handling, and device-level tests. The current app must not be described as a complete WARP client.
 
 ## Build
-Requires JDK 17 and Android SDK 35:
-`gradle :app:assembleDebug`
 
-APK:
-`app/build/outputs/apk/debug/app-debug.apk`
+- JDK 17
+- Android SDK platform 35
+- Gradle 8.11.1
 
-## Dependencies and notices
-- WireGuard Android tunnel library: Apache-2.0, `com.wireguard.android:tunnel:1.0.20260102`.
-- WireGuard userspace engine is provided by the official library; see https://git.zx2c4.com/wireguard-android and its license notices.
-- PyWarp upstream is AGPL-3.0; this Android implementation does not copy its Python/QML source code. See https://github.com/saeedmasoudie/pywarp.
+    gradle :app:assembleDebug
 
-## Package
-`com.pywarp.mobile`
+The GitHub Actions workflow builds and uploads the debug APK as pywarp-debug-apk.
+
+## Licensing
+
+The WireGuard Android tunnel library is distributed under its upstream license. PyWarp-specific code is maintained in this repository. Do not copy third-party Android app code or prebuilt binaries without verifying their license and notices.
