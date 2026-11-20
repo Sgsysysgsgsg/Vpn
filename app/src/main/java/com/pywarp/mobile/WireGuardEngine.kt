@@ -24,7 +24,7 @@ object WireGuardEngine {
     fun connect(context: Context, configBytes: ByteArray) {
         val parsed = Config.parse(ByteArrayInputStream(configBytes))
         require(parsed.peers.isNotEmpty()) { "The configuration has no [Peer] section." }
-        require(parsed.interface.addresses.isNotEmpty()) { "The configuration has no Interface Address." }
+        require(parsed.getInterface().addresses.isNotEmpty()) { "The configuration has no Interface Address." }
 
         val activeBackend = backend ?: GoBackend(context.applicationContext).also { backend = it }
         val result = activeBackend.setState(tunnel, Tunnel.State.UP, parsed)
