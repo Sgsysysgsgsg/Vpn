@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         configured = configFile.exists()
         connected = WireGuardEngine.isConnected()
-        if (connected) status = "WireGuard tunnel is active in this app process."
+        if (connected) status = "WireGuard tunnel interface is active (backend state UP)."
         setContent {
             PyWarpTheme {
                 Dashboard(
@@ -105,7 +105,7 @@ class MainActivity : ComponentActivity() {
                     WireGuardEngine.connect(this@MainActivity, configFile.readBytes())
                 }
                 connected = WireGuardEngine.isConnected()
-                status = if (connected) "WireGuard backend reports the tunnel UP." else "Tunnel did not enter UP state."
+                status = if (connected) "Tunnel interface is UP. Peer handshake and end-to-end internet reachability are not yet verified." else "Tunnel did not enter UP state."
             } catch (error: Exception) {
                 connected = false
                 status = "Connection failed: ${error.message ?: error.javaClass.simpleName}"
@@ -180,7 +180,7 @@ private fun Dashboard(
                 }
             }
             Spacer(Modifier.height(22.dp))
-            Text(if (connected) "Connected" else "Not connected",
+            Text(if (connected) "Tunnel active" else "Not connected",
                 color = Color.White, fontSize = 25.sp, fontWeight = FontWeight.SemiBold)
             Text(if (configured) "WireGuard configuration ready" else "No configuration imported",
                 color = Color(0xFF9CA3B8), fontSize = 13.sp)
@@ -219,7 +219,7 @@ private fun Dashboard(
                 }
             }
             Spacer(Modifier.height(12.dp))
-            Text("This build runs standard WireGuard configs. Cloudflare WARP account provisioning and MASQUE are not implemented.",
+            Text("UP means the local tunnel interface started; it does not prove a peer handshake or internet access. This build runs standard WireGuard configs, not Cloudflare WARP account provisioning or MASQUE.",
                 color = Color(0xFF9CA3B8), fontSize = 11.sp, lineHeight = 16.sp)
             Spacer(Modifier.weight(1f))
             Text("WIREGUARD-GO • ANDROID", color = Color(0xFF697187), fontSize = 10.sp, letterSpacing = 1.4.sp)
