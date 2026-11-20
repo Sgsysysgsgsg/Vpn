@@ -1,7 +1,6 @@
 package com.pywarp.mobile
 
 import android.app.Activity
-import android.content.Intent
 import android.net.VpnService
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -16,6 +15,8 @@ import androidx.compose.material.icons.rounded.Bolt
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
